@@ -85,7 +85,7 @@ export const onSelfJoin = async function (data) {
   }
 
   await bot.sendMessage({
-    group: data.sender.group.id,
-    message: new Message().addText('at 我提问，解答 PixelCloud 问题'),
+    group: data.group.id,
+    message: new Message().addText('向我提问，解答 PixelCloud 问题'),
   })
 }
