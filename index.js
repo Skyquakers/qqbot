@@ -1,22 +1,13 @@
 import { Bot, Middleware } from 'mirai-js'
-import fs from 'fs'
-import yaml from 'js-yaml'
-import { qq } from './secret.js'
+import { qq, port, verifyKey } from './secret.js'
 import { useBot, onMessage, onFriendRequest, onMemberJoin, onSelfJoin } from './libs/bot.js'
-
-const setting = yaml.load(
-  fs.readFileSync(
-    './setting.yml',
-    'utf8'
-  )
-)
 
 const bot = new Bot()
 useBot(bot)
 
 const endpointOption = {
-  baseUrl: 'http://localhost:8080',
-  verifyKey: setting.verifyKey,
+  baseUrl: `http://localhost:${port}`,
+  verifyKey,
 }
 
 const main = async function () {
@@ -31,6 +22,13 @@ const main = async function () {
   bot.on('MemberJoinEvent', onMemberJoin)
   bot.on('NewFriendRequestEvent', new Middleware().friendRequestProcessor().done(onFriendRequest))
   bot.on('BotJoinGroupEvent', onSelfJoin)
+
+  bot.on('error', (_, message) => {
+    console.error(message)
+  })
+  bot.on('close', () => {
+    console.log('bot', qq, 'closed')
+  })
 }
 
 main().catch(console.error)
