@@ -9,7 +9,7 @@ export const useBot = function (_bot) {
   bot = _bot
 }
 
-export const onMessage = async function (data) {
+export const onMessage = async function (data, broadcast = false) {
   if (!bot) {
     throw new Error('bot not set')
   }
@@ -44,7 +44,7 @@ export const onMessage = async function (data) {
 
   const result = await composeResult()
 
-  if (data.sender.group) {
+  if (broadcast) {
     await bot.sendMessage({
       group: data.sender.group.id,
       message: new Message().addAt(data.sender.id).addText(` ${result}`),

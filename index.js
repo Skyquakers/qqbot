@@ -17,7 +17,7 @@ const main = async function () {
   })
 
   bot.on('FriendMessage', onMessage)
-  bot.on('TempMessage', onMessage)
+  bot.on('TempMessage', data => onMessage(data, false))
   bot.on('GroupMessage', new Middleware().atFilter([qq]).done(onMessage))
   bot.on('MemberJoinEvent', onMemberJoin)
   bot.on('NewFriendRequestEvent', new Middleware().friendRequestProcessor().done(onFriendRequest))
