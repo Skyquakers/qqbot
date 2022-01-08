@@ -1,4 +1,7 @@
 import Nightmare from 'nightmare'
+import Xvfb from 'xvfb'
+
+const xvfb = new Xvfb()
 
 export const search = function (query) {
   const nightmare = Nightmare({
@@ -6,6 +9,8 @@ export const search = function (query) {
   })
 
   return new Promise((resolve, reject) => {
+    xvfb.startSync()
+
     nightmare
       .goto(`https://www.yuque.com/search?q=${query}&scope=pixelcloud`)
       .wait(function () {
@@ -34,6 +39,9 @@ export const search = function (query) {
       .end()
       .then(res => {
         resolve(res)
+      })
+      .then(() => {
+        xvfb.stopSync()
       })
       .catch(err => {
         reject(err)

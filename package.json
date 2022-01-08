@@ -13,6 +13,7 @@
   "dependencies": {
     "js-yaml": "^4.1.0",
     "mirai-js": "^2.3.0",
-    "nightmare": "^3.0.2"
+    "nightmare": "^3.0.2",
+    "xvfb": "^0.4.0"
   }
 }

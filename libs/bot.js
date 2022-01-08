@@ -2,6 +2,7 @@ import { Message } from 'mirai-js'
 import { search } from './spider.js'
 
 const pendingQueries = new Set()
+const pendingSize = 1
 let bot = null
 
 export const useBot = function (_bot) {
@@ -20,8 +21,8 @@ export const onMessage = async function (data) {
       return '请带上你的问题再发一遍'
     }
 
-    if (pendingQueries.has(data.sender.id)) {
-      return '正在帮你查，等一下'
+    if (pendingQueries.size > pendingSize) {
+      return '正在帮别人查，稍等一下喔'
     }
 
     pendingQueries.add(data.sender.id)
