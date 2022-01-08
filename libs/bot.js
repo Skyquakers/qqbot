@@ -21,7 +21,7 @@ export const onMessage = async function (data) {
       return '请带上你的问题再发一遍'
     }
 
-    if (pendingQueries.size > pendingSize) {
+    if (pendingQueries.size >= pendingSize) {
       return '正在帮别人查，稍等一下喔'
     }
 
