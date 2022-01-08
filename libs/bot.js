@@ -9,7 +9,7 @@ export const useBot = function (_bot) {
   bot = _bot
 }
 
-export const onMessage = async function (data, broadcast = false) {
+export const onMessage = async function (data, temp = false) {
   if (!bot) {
     throw new Error('bot not set')
   }
@@ -26,10 +26,10 @@ export const onMessage = async function (data, broadcast = false) {
     }
 
     pendingQueries.add(data.sender.id)
-    console.log(`${data.sender.id}: search ${query}`)
+    console.log(`${new Date().toLocaleString()} ${data.sender.id}: search ${query}`)
     const start = Date.now()
     const docs = await search(query)
-    console.log(`${data.sender.id}: got ${docs.length} results, took ${Date.now() - start} ms`)
+    console.log(`${new Date().toLocaleString()} ${data.sender.id}: got ${docs.length} results, took ${Date.now() - start} ms`)
 
     if (docs.length === 0) {
       return '我不知道，请在 https://yuque.com/pixelcloud 提交工单'
@@ -44,18 +44,26 @@ export const onMessage = async function (data, broadcast = false) {
 
   const result = await composeResult()
 
-  if (broadcast) {
+  if (temp) {
+    await bot.sendMessage({
+      temp: true,
+      friend: data.sender.id,
+      group: data.sender.group.id,
+      message: new Message().addAt(data.sender.id).addText(` ${result}`),
+    })
+    console.log(`${new Date().toLocaleString()} ${data.sender.id}: reply to ${data.sender.id} from ${data.sender.group.id} temp message`)
+  } else if (data.sender.group) {
     await bot.sendMessage({
       group: data.sender.group.id,
       message: new Message().addAt(data.sender.id).addText(` ${result}`),
     })
-    console.log(`${data.sender.id}: reply to ${data.sender.id} in ${data.sender.group.id}`)
+    console.log(`${new Date().toLocaleString()} ${data.sender.id}: reply to ${data.sender.id} in ${data.sender.group.id}`)
   } else {
     await bot.sendMessage({
       friend: data.sender.id,
       message: new Message().addText(result),
     })
-    console.log(`${data.sender.id}: reply to ${data.sender.id}`)
+    console.log(`${new Date().toLocaleString()} ${data.sender.id}: reply to ${data.sender.id}`)
   }
 
   pendingQueries.delete(data.sender.id)
